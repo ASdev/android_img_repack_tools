@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# configure script for android_repack_tools.
+# configure script for android_img_repack_tools.
 #
 BRANCH=android-4.4.2_r1
 BRANCH_EXT=stable/cm-11.0
