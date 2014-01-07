@@ -102,7 +102,7 @@ clean:
 
 clear:
 	@$(ECHO) "Clearing..."
-	@$(RM) -rfv *.o *.a
+	@$(RM) -rfv *.o *.a *.sh
 	@$(RM) -drfv \
 	core \
 	extras \
