@@ -135,8 +135,6 @@ libselinux:
 	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
-.PHONY: libz
-
 libz:
 	@$(ECHO) "Building zlib_host..."
 	@$(CC) -c $(ZLIB_SRCS) $(CFLAGS)
@@ -144,8 +142,6 @@ libz:
 	@$(RM) -rf *.o
 	@$(ECHO) "*******************************************"
 		
-.PHONY: libselinux
-
 libmincrypt_host:
 	@$(ECHO) "Building libmincrypt_host..."
 	@$(CC) -c $(LIBMINCRYPT_SRCS) $(CFLAGS)
