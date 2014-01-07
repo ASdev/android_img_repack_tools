@@ -116,7 +116,8 @@ all: \
 	libselinux \
 	libz \
 	libmincrypt_host \
-	mkbootimg mkbootfs \
+	mkbootimg \
+	mkbootfs \
 	libsparse_host \
 	simg2img \
 	simg2simg \
