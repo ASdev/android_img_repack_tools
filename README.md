@@ -1,4 +1,4 @@
-android_img_repack_tools branch android-2.3.7_r1
+android_img_repack_tools branch android-4.0.4_r2.1
 ====================
 
 android_img_repack_tools is a kit utilites for unpack/repack android ext4 and boot images
@@ -15,6 +15,7 @@ will compille binaries:
 mkbootfs
 simg2simg
 make_ext4fs
+ext2simg
 mkbootimg
 unpackbootimg
 
