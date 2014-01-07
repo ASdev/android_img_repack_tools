@@ -233,5 +233,4 @@ clear:
 	extras \
 	libselinux \
 	zlib \
-	external \
-	libs
+	external
