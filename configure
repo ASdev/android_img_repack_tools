@@ -36,7 +36,7 @@ get_src https://android.googlesource.com/platform/external/zlib
 get_src https://github.com/CyanogenMod/android_system_core.git
 	cd android_system_core
 	checkout_external
-	cd ..
+	cd ../..
 
 edit_text '/^/s:fs_config_func(dentries://fs_config_func(dentries:' $FILE
 edit_text '/^/s:mode;:stat.st_mode;:' $FILE
