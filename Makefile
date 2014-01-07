@@ -24,6 +24,7 @@ ZLIB_SRCS= \
 LIBMINCRYPT_SRCS= core/libmincrypt/*.c
 EXT4FS_SRCS= \
 	extras/ext4_utils/make_ext4fs.c \
+	extras/ext4_utils/ext4fixup.c \
 	extras/ext4_utils/ext4_utils.c \
 	extras/ext4_utils/allocate.c \
 	extras/ext4_utils/backed_block.c \
@@ -33,7 +34,8 @@ EXT4FS_SRCS= \
 	extras/ext4_utils/indirect.c \
 	extras/ext4_utils/uuid.c \
 	extras/ext4_utils/sha1.c \
-	extras/ext4_utils/sparse_crc32.c
+	extras/ext4_utils/sparse_crc32.c \
+	extras/ext4_utils/wipe.c
 
 all: \
 	libz \
@@ -42,6 +44,7 @@ all: \
 	mkbootfs \
 	simg2img \
 	make_ext4fs \
+	ext2simg \
 	unpackbootimg
 
 libz:
@@ -77,6 +80,11 @@ make_ext4fs:
 	@$(ECHO) "Building make_ext4fs..."
 	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS)
 	@$(ECHO) "*******************************************"
+	
+ext2simg:
+	@$(ECHO) "Building ext2simg..."
+	@$(CC) -o $@ extras/ext4_utils/ext2simg.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS)
+	@$(ECHO) "*******************************************"
 
 unpackbootimg:
 	@$(ECHO) "Building unpackbootimg..."
@@ -95,6 +103,7 @@ clean:
 	unpackbootimg \
 	simg2img \
 	make_ext4fs \
+	ext2simg
 
 	@$(ECHO) "*******************************************"
 	
