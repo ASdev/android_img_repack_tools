@@ -84,11 +84,6 @@ unpackbootimg:
 	@$(RM) -rfv *.a
 	@$(ECHO) "*******************************************"
 
-sgs4ext4fs:
-	@$(ECHO) "Building sgs4ext4fs..."
-	@$(CC) external/sgs4ext4fs/main.c -o $@
-	@$(ECHO) "*******************************************"
-	
 .PHONY:
 
 clean:
