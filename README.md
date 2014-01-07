@@ -28,5 +28,5 @@ will clean sources
 
 $ make clear
 
-wiil remove binaries
+will remove sources
 
