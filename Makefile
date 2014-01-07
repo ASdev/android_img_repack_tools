@@ -38,7 +38,8 @@ EXT4FS_SRCS= \
 all: \
 	libz \
 	libmincrypt_host \
-	mkbootimg mkbootfs \
+	mkbootimg \
+	mkbootfs \
 	simg2img \
 	make_ext4fs \
 	unpackbootimg \
