@@ -16,11 +16,7 @@ mkbootfs
 simg2simg
 make_ext4fs
 mkbootimg
-sgs4ext4fs
 unpackbootimg
-ext2simg
-img2simg
-simg2img 
 
 $ make clean
 
