@@ -42,7 +42,7 @@ all: \
 	mkbootfs \
 	simg2img \
 	make_ext4fs \
-	unpackbootimg \
+	unpackbootimg
 
 libz:
 	@$(ECHO) "Building zlib_host..."
