@@ -135,14 +135,14 @@ libselinux:
 	@$(AR) cqs $@.a $(SELINUX_OBJS)
 	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
-	
+
 libz:
 	@$(ECHO) "Building zlib_host..."
 	@$(CC) -c $(ZLIB_SRCS) $(CFLAGS)
 	@$(AR) cqs $@.a *.o
 	@$(RM) -rf *.o
 	@$(ECHO) "*******************************************"
-		
+
 libmincrypt_host:
 	@$(ECHO) "Building libmincrypt_host..."
 	@$(CC) -c $(LIBMINCRYPT_SRCS) $(CFLAGS)
