@@ -5,7 +5,7 @@ ECHO=echo
 CFLAGS=-DHOST -Icore/include -Icore/libsparse/include -Icore/libsparse -Ilibselinux/include -Icore/mkbootimg
 LDFLAGS=-L.
 LIBS=-lz
-LIBZ=-lsparse_host -lselinux
+LIBZ=-lsparse_host -lselinux -lpcre
 SELINUX_SRCS= \
 	libselinux/src/booleans.c \
 	libselinux/src/canonicalize_context.c \
@@ -32,7 +32,9 @@ SELINUX_SRCS= \
 	libselinux/src/avc_internal.c \
 	libselinux/src/avc_sidtab.c \
 	libselinux/src/get_initial_context.c \
-	libselinux/src/checkAccess.c
+	libselinux/src/checkAccess.c \
+	libselinux/src/sestatus.c \
+	libselinux/src/deny_unknown.c
 SELINUX_HOST= \
 	libselinux/src/callbacks.c \
 	libselinux/src/check_context.c \
@@ -41,40 +43,6 @@ SELINUX_HOST= \
 	libselinux/src/label.c \
 	libselinux/src/label_file.c \
 	libselinux/src/label_android_property.c
-SELINUX_OBJS= \
-	enabled.o \
-	load_policy.o \
-	avc_internal.o \
-	fgetfilecon.o \
-	lsetfilecon.o \
-	avc.o \
-	fsetfilecon.o \
-	freecon.o \
-	avc_sidtab.o \
-	getenforce.o \
-	mapping.o \
-	booleans.o \
-	getfilecon.o \
-	callbacks.o \
-	get_initial_context.o \
-	policyvers.o \
-	canonicalize_context.o \
-	getpeercon.o \
-	procattr.o \
-	checkAccess.o \
-	setenforce.o \
-	check_context.o \
-	init.o \
-	setfilecon.o \
-	compute_av.o \
-	label_android_property.o \
-	compute_create.o \
-	label_file.o \
-	stringrep.o \
-	context.o \
-	label.o \
-	disable.o \
-	lgetfilecon.o
 ZLIB_SRCS= \
 	zlib/src/adler32.c \
 	zlib/src/compress.c \
@@ -110,10 +78,15 @@ EXT4FS_SRCS= \
     extras/ext4_utils/uuid.c \
     extras/ext4_utils/sha1.c \
     extras/ext4_utils/wipe.c \
-    extras/ext4_utils/crc16.c
+    extras/ext4_utils/crc16.c \
+    extras/ext4_utils/ext4_sb.c
+EXT4FS_MAIN= \
+    extras/ext4_utils/make_ext4fs_main.c \
+    extras/ext4_utils/canned_fs_config.c
 
 all: \
 	libselinux \
+	libpcre \
 	libz \
 	libmincrypt_host \
 	mkbootimg \
@@ -132,7 +105,13 @@ all: \
 libselinux:
 	@$(ECHO) "Building libselinux..."
 	@$(CC) -c $(SELINUX_SRCS) $(CFLAGS) $(SELINUX_HOST)
-	@$(AR) cqs $@.a $(SELINUX_OBJS)
+	@$(AR) cqs $@.a *.o
+	@$(RM) -rfv *.o
+	@$(ECHO) "*******************************************"
+	
+libpcre:
+	@$(ECHO) "Building libpcre..."
+	@$(AR) cqs $@.a pcre/*.o
 	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
@@ -140,14 +119,14 @@ libz:
 	@$(ECHO) "Building zlib_host..."
 	@$(CC) -c $(ZLIB_SRCS) $(CFLAGS)
 	@$(AR) cqs $@.a *.o
-	@$(RM) -rf *.o
+	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 		
 libmincrypt_host:
 	@$(ECHO) "Building libmincrypt_host..."
 	@$(CC) -c $(LIBMINCRYPT_SRCS) $(CFLAGS)
 	@$(AR) cqs $@.a *.o
-	@$(RM) -rf *.o
+	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
 mkbootimg:
@@ -186,7 +165,7 @@ img2simg:
 	
 make_ext4fs:
 	@$(ECHO) "Building make_ext4fs..."
-	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
+	@$(CC) -o $@ $(EXT4FS_MAIN) $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
 	@$(ECHO) "*******************************************"
 	
 ext2simg:
@@ -209,7 +188,7 @@ sgs4ext4fs:
 
 clean:
 	@$(ECHO) "Cleaning..."
-	@$(RM) -rfv *.o *.a *.sh \
+	@$(RM) -rfv *.o *.a \
 	libmincrypt \
 	mkbootimg \
 	mkbootfs \
@@ -228,10 +207,11 @@ clean:
 
 clear:
 	@$(ECHO) "Clearing..."
-	@$(RM) -rfv *.o *.a
+	@$(RM) -rfv *.o *.a *.sh
 	@$(RM) -drfv \
 	core \
 	extras \
 	libselinux \
 	zlib \
-	external
+	external \
+	pcre
