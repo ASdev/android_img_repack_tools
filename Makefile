@@ -32,7 +32,9 @@ SELINUX_SRCS= \
 	libselinux/src/avc_internal.c \
 	libselinux/src/avc_sidtab.c \
 	libselinux/src/get_initial_context.c \
-	libselinux/src/checkAccess.c
+	libselinux/src/checkAccess.c \
+	libselinux/src/sestatus.c \
+	libselinux/src/deny_unknown.c
 SELINUX_HOST= \
 	libselinux/src/callbacks.c \
 	libselinux/src/check_context.c \
@@ -41,40 +43,6 @@ SELINUX_HOST= \
 	libselinux/src/label.c \
 	libselinux/src/label_file.c \
 	libselinux/src/label_android_property.c
-SELINUX_OBJS= \
-	enabled.o \
-	load_policy.o \
-	avc_internal.o \
-	fgetfilecon.o \
-	lsetfilecon.o \
-	avc.o \
-	fsetfilecon.o \
-	freecon.o \
-	avc_sidtab.o \
-	getenforce.o \
-	mapping.o \
-	booleans.o \
-	getfilecon.o \
-	callbacks.o \
-	get_initial_context.o \
-	policyvers.o \
-	canonicalize_context.o \
-	getpeercon.o \
-	procattr.o \
-	checkAccess.o \
-	setenforce.o \
-	check_context.o \
-	init.o \
-	setfilecon.o \
-	compute_av.o \
-	label_android_property.o \
-	compute_create.o \
-	label_file.o \
-	stringrep.o \
-	context.o \
-	label.o \
-	disable.o \
-	lgetfilecon.o
 ZLIB_SRCS= \
 	zlib/src/adler32.c \
 	zlib/src/compress.c \
@@ -132,7 +100,7 @@ all: \
 libselinux:
 	@$(ECHO) "Building libselinux..."
 	@$(CC) -c $(SELINUX_SRCS) $(CFLAGS) $(SELINUX_HOST)
-	@$(AR) cqs $@.a $(SELINUX_OBJS)
+	@$(AR) cqs $@.a *.o
 	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
@@ -209,7 +177,7 @@ sgs4ext4fs:
 
 clean:
 	@$(ECHO) "Cleaning..."
-	@$(RM) -rfv *.o *.a *.sh \
+	@$(RM) -rfv *.o *.a \
 	libmincrypt \
 	mkbootimg \
 	mkbootfs \
@@ -228,7 +196,7 @@ clean:
 
 clear:
 	@$(ECHO) "Clearing..."
-	@$(RM) -rfv *.o *.a
+	@$(RM) -rfv *.o *.a *.sh
 	@$(RM) -drfv \
 	core \
 	extras \
