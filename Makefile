@@ -96,7 +96,7 @@ unpackbootimg:
 
 clean:
 	@$(ECHO) "Cleaning..."
-	@$(RM) -rfv *.o *.a *.sh \
+	@$(RM) -rfv *.o *.a \
 	libmincrypt \
 	mkbootimg \
 	mkbootfs \
