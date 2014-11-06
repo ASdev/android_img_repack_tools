@@ -2,8 +2,8 @@
 #
 # configure script for android_img_repack_tools.
 #
-BRANCH=
-BRANCH_EXT=
+BRANCH=android-5.0.0_r2
+BRANCH_EXT=stable/cm-11.0
 FILE=extras/ext4_utils/make_ext4fs.c
 FILE1=extras/ext4_utils/mkuserimg.sh
 
@@ -32,6 +32,11 @@ get_src https://android.googlesource.com/platform/system/extras
 get_src https://android.googlesource.com/platform/external/libselinux
 	cd libselinux
 	checkout
+	cd ..
+get_src https://android.googlesource.com/platform/external/pcre
+	cd pcre
+	git checkout android-l-preview_r2
+	dist/configure && make
 	cd ..
 get_src https://android.googlesource.com/platform/external/zlib
 	cd zlib
