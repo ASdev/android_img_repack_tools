@@ -9,6 +9,10 @@ step one: Install these packages:
 
 android-liblog-dev                    https://packages.debian.org/jessie/android-liblog-dev
 
+create link for lib
+
+$ sudo ln /usr/lib/android/*.* /usr/local/lib/
+
 step two: download the sources:
 
 $ ./configure
