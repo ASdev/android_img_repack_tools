@@ -2,8 +2,8 @@
 #
 # configure script for android_img_repack_tools.
 #
-BRANCH=
-BRANCH_EXT=
+BRANCH=android-6.0.0_r1
+BRANCH_EXT=stable/cm-13
 FILE=extras/ext4_utils/make_ext4fs.c
 FILE1=extras/ext4_utils/mkuserimg.sh
 
@@ -33,6 +33,11 @@ get_src https://android.googlesource.com/platform/external/libselinux
 	cd libselinux
 	checkout
 	cd ..
+get_src https://android.googlesource.com/platform/external/pcre
+	cd pcre
+	git checkout android-l-preview_r2
+	dist/configure && make
+	cd ..
 get_src https://android.googlesource.com/platform/external/zlib
 	cd zlib
 	checkout
@@ -44,11 +49,6 @@ get_src https://github.com/CyanogenMod/android_system_core.git
 get_src https://github.com/Chainfire/sgs4ext4fs
 	cd ..
 	
-edit_text '/^/s:fs_config_func(dentries://fs_config_func(dentries:' $FILE
-edit_text '/^/s:mode;:stat.st_mode;:' $FILE
-edit_text '/^/s:uid;:stat.st_uid;:' $FILE
-edit_text '/^/s:gid;:stat.st_gid;:' $FILE
-edit_text '/^/s:root_stat.st_mode;:root_mode;:' $FILE
 edit_text '/^/s:MAKE_EXT4FS_CMD="make_ext4fs:MAKE_EXT4FS_CMD="./make_ext4fs:' $FILE1
 	cp -fv $FILE1 .
 
