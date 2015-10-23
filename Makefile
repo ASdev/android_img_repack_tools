@@ -2,10 +2,11 @@ CC=gcc -I. -DANDROID
 AR=ar
 RM=rm
 ECHO=echo
-CFLAGS=-DHOST -Icore/include -Icore/libsparse/include -Icore/libsparse -Ilibselinux/include -Icore/mkbootimg
+CFLAGS=-DHOST -Icore/include -Icore/libsparse/include -Icore/libsparse -Ilibselinux/include
 LDFLAGS=-L.
 LIBS=-lz
-LIBZ=-lsparse_host -lselinux
+LOCAL_LDLIBS=-llog
+LIBZ=-lsparse -lselinux -lpcre -lcutils -lmincrypt
 SELINUX_SRCS= \
 	libselinux/src/booleans.c \
 	libselinux/src/canonicalize_context.c \
@@ -32,7 +33,9 @@ SELINUX_SRCS= \
 	libselinux/src/avc_internal.c \
 	libselinux/src/avc_sidtab.c \
 	libselinux/src/get_initial_context.c \
-	libselinux/src/checkAccess.c
+	libselinux/src/checkAccess.c \
+	libselinux/src/sestatus.c \
+	libselinux/src/deny_unknown.c
 SELINUX_HOST= \
 	libselinux/src/callbacks.c \
 	libselinux/src/check_context.c \
@@ -73,23 +76,44 @@ EXT4FS_SRCS= \
     extras/ext4_utils/contents.c \
     extras/ext4_utils/extent.c \
     extras/ext4_utils/indirect.c \
-    extras/ext4_utils/uuid.c \
     extras/ext4_utils/sha1.c \
     extras/ext4_utils/wipe.c \
-    extras/ext4_utils/crc16.c
+    extras/ext4_utils/crc16.c \
+    extras/ext4_utils/ext4_sb.c
+EXT4FS_MAIN= \
+    extras/ext4_utils/make_ext4fs_main.c \
+    extras/ext4_utils/canned_fs_config.c
+LIBCUTILS_SRCS= \
+	core/libcutils/hashmap.c \
+	core/libcutils/native_handle.c \
+	core/libcutils/config_utils.c \
+	core/libcutils/load_file.c \
+	core/libcutils/strlcpy.c \
+	core/libcutils/open_memstream.c \
+	core/libcutils/strdup16to8.c \
+	core/libcutils/strdup8to16.c \
+	core/libcutils/record_stream.c \
+	core/libcutils/process_name.c \
+	core/libcutils/threads.c \
+	core/libcutils/sched_policy.c \
+	core/libcutils/iosched_policy.c \
+	core/libcutils/str_parms.c \
+	core/libcutils/fs_config.c
 
 all: \
 	libselinux \
+	libpcre \
 	libz \
-	libmincrypt_host \
-	mkbootimg \
-	mkbootfs \
-	libsparse_host \
+	libmincrypt \
+	libsparse \
+	libcutils \
 	simg2img \
 	simg2simg \
 	img2simg \
 	make_ext4fs \
 	ext2simg \
+	mkbootfs \
+	mkbootimg \
 	unpackbootimg \
 	sgs4ext4fs
 
@@ -102,31 +126,44 @@ libselinux:
 	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
+libpcre:
+	@$(ECHO) "Building libpcre..."
+	@$(AR) cqs $@.a pcre/*.o
+	@$(RM) -rfv *.o
+	@$(ECHO) "*******************************************"
+	
 libz:
 	@$(ECHO) "Building zlib_host..."
 	@$(CC) -c $(ZLIB_SRCS) $(CFLAGS)
 	@$(AR) cqs $@.a *.o
-	@$(RM) -rf *.o
+	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
-		
-libmincrypt_host:
+	
+libmincrypt:
 	@$(ECHO) "Building libmincrypt_host..."
 	@$(CC) -c $(LIBMINCRYPT_SRCS) $(CFLAGS)
 	@$(AR) cqs $@.a *.o
-	@$(RM) -rf *.o
+	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
+libcutils:
+	@$(ECHO) "Building libcutils_host..."
+	@$(CC) -c $(LIBCUTILS_SRCS) $(CFLAGS) $(LIBZ)
+	@$(AR) cqs $@.a *.o
+	@$(RM) -rfv *.o
+	@$(ECHO) "*******************************************"
+
 mkbootimg:
 	@$(ECHO) "Building mkbootimg..."
-	@$(CC) core/mkbootimg/mkbootimg.c -o $@ $(CFLAGS) $(LIBS) libmincrypt_host.a
+	@$(CC) external/android_system_core/mkbootimg/mkbootimg.c -o $@ $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
 	@$(ECHO) "*******************************************"
 	
 mkbootfs:
 	@$(ECHO) "Building mkbootfs..."
-	@$(CC) core/cpio/mkbootfs.c -o $@ $(CFLAGS) $(LIBS)
+	@$(CC) core/cpio/mkbootfs.c -o $@  $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ) $(LOCAL_LDLIBS)
 	@$(ECHO) "*******************************************"
 
-libsparse_host:
+libsparse:
 	@$(ECHO) "Building libsparse_host..."
 	@$(ECHO) "*******************************************"
 	@$(CC) -c core/libsparse/*.c $(CFLAGS)
@@ -152,7 +189,7 @@ img2simg:
 	
 make_ext4fs:
 	@$(ECHO) "Building make_ext4fs..."
-	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
+	@$(CC) -o $@ $(EXT4FS_MAIN) $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ) $(LOCAL_LDLIBS)
 	@$(ECHO) "*******************************************"
 	
 ext2simg:
@@ -162,7 +199,7 @@ ext2simg:
 	
 unpackbootimg:
 	@$(ECHO) "Building unpackbootimg..."
-	@$(CC) external/android_system_core/mkbootimg/unpackbootimg.c -o $@ $(CFLAGS) $(LIBS) libmincrypt_host.a
+	@$(CC) external/android_system_core/mkbootimg/unpackbootimg.c -o $@ $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
 	@$(RM) -rfv *.a
 	@$(ECHO) "*******************************************"
 
@@ -200,4 +237,5 @@ clear:
 	extras \
 	libselinux \
 	zlib \
-	external
+	external \
+	pcre
