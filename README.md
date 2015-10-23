@@ -11,7 +11,7 @@ android-liblog-dev                    https://packages.debian.org/jessie/android
 
 create link for lib
 
-$ sudo ln /usr/lib/android/*.* /usr/local/lib/
+$ sudo ln /usr/lib/android/liblog.a /usr/local/lib/
 
 step two: download the sources:
 
