@@ -41,6 +41,17 @@ EXT4FS_SRCS= \
     extras/ext4_utils/uuid.c \
     extras/ext4_utils/sha1.c \
     extras/ext4_utils/wipe.c
+EXT4FS_DEF_SRCS= \
+    extras/ext4_utils/make_ext4fs_def.c \
+    extras/ext4_utils/ext4fixup.c \
+    extras/ext4_utils/ext4_utils.c \
+    extras/ext4_utils/allocate.c \
+    extras/ext4_utils/contents.c \
+    extras/ext4_utils/extent.c \
+    extras/ext4_utils/indirect.c \
+    extras/ext4_utils/uuid.c \
+    extras/ext4_utils/sha1.c \
+    extras/ext4_utils/wipe.c
 
 all: \
 	libz \
@@ -52,6 +63,7 @@ all: \
 	simg2simg \
 	img2simg \
 	make_ext4fs \
+	make_ext4fs_def \
 	ext2simg \
 	unpackbootimg \
 	sgs4ext4fs
@@ -109,6 +121,11 @@ make_ext4fs:
 	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
 	@$(ECHO) "*******************************************"
 	
+make_ext4fs_def:
+	@$(ECHO) "Building make_ext4fs_def..."
+	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_DEF_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
+	@$(ECHO) "*******************************************"
+	
 ext2simg:
 	@$(ECHO) "Building ext2simg..."
 	@$(CC) -o $@ extras/ext4_utils/ext2simg.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
@@ -139,6 +156,7 @@ clean:
 	simg2simg \
 	img2simg \
 	make_ext4fs \
+	make_ext4fs_def \
 	ext2simg \
 	sgs4ext4fs
 
