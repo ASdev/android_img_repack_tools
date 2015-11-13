@@ -34,6 +34,11 @@ get_src https://android.googlesource.com/platform/external/libselinux
 	cd libselinux
 	checkout
 	cd ..
+get_src https://android.googlesource.com/platform/external/pcre
+	cd pcre
+	checkout
+	dist/configure && make
+	cd ..
 get_src https://android.googlesource.com/platform/external/zlib
 	cd zlib
 	checkout
