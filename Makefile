@@ -170,7 +170,7 @@ make_ext4fs:
 	
 make_ext4fs_def:
 	@$(ECHO) "Building make_ext4fs_def..."
-	@$(CC) -o $@ $(EXT4FS_MAIN) $(EXT4FS_DEF_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
+	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_DEF_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
 	@$(ECHO) "*******************************************"
 		
 ext2simg:
