@@ -5,7 +5,7 @@ ECHO=echo
 CFLAGS=-DHOST -Icore/include -Icore/libsparse/include -Icore/libsparse -Ilibselinux/include -Icore/mkbootimg
 LDFLAGS=-L.
 LIBS=-lz
-LIBZ=-lsparse_host -lselinux
+LIBZ=-lsparse_host -lselinux -lpcre
 SELINUX_SRCS= \
 	libselinux/src/booleans.c \
 	libselinux/src/canonicalize_context.c \
@@ -32,7 +32,9 @@ SELINUX_SRCS= \
 	libselinux/src/avc_internal.c \
 	libselinux/src/avc_sidtab.c \
 	libselinux/src/get_initial_context.c \
-	libselinux/src/checkAccess.c
+	libselinux/src/checkAccess.c \
+	libselinux/src/sestatus.c \
+	libselinux/src/deny_unknown.c
 SELINUX_HOST= \
 	libselinux/src/callbacks.c \
 	libselinux/src/check_context.c \
@@ -76,7 +78,11 @@ EXT4FS_SRCS= \
     extras/ext4_utils/uuid.c \
     extras/ext4_utils/sha1.c \
     extras/ext4_utils/wipe.c \
-    extras/ext4_utils/crc16.c
+    extras/ext4_utils/crc16.c \
+    extras/ext4_utils/ext4_sb.c
+EXT4FS_MAIN= \
+    extras/ext4_utils/make_ext4fs_main.c \
+    extras/ext4_utils/canned_fs_config.c
 EXT4FS_DEF_SRCS= \
     extras/ext4_utils/make_ext4fs_def.c \
     extras/ext4_utils/ext4fixup.c \
@@ -88,10 +94,12 @@ EXT4FS_DEF_SRCS= \
     extras/ext4_utils/uuid.c \
     extras/ext4_utils/sha1.c \
     extras/ext4_utils/wipe.c \
-    extras/ext4_utils/crc16.c
+    extras/ext4_utils/crc16.c \
+    extras/ext4_utils/ext4_sb.c
 
 all: \
 	libselinux \
+	libpcre \
 	libz \
 	libmincrypt_host \
 	mkbootimg \
@@ -115,18 +123,24 @@ libselinux:
 	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
+libpcre:
+	@$(ECHO) "Building libpcre..."
+	@$(AR) cqs $@.a pcre/*.o
+	@$(RM) -rfv *.o
+	@$(ECHO) "*******************************************"
+	
 libz:
 	@$(ECHO) "Building zlib_host..."
 	@$(CC) -c $(ZLIB_SRCS) $(CFLAGS)
 	@$(AR) cqs $@.a *.o
-	@$(RM) -rf *.o
+	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 		
 libmincrypt_host:
 	@$(ECHO) "Building libmincrypt_host..."
 	@$(CC) -c $(LIBMINCRYPT_SRCS) $(CFLAGS)
 	@$(AR) cqs $@.a *.o
-	@$(RM) -rf *.o
+	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
 	
 mkbootimg:
@@ -165,14 +179,14 @@ img2simg:
 	
 make_ext4fs:
 	@$(ECHO) "Building make_ext4fs..."
-	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
+	@$(CC) -o $@ $(EXT4FS_MAIN) $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
 	@$(ECHO) "*******************************************"
 	
 make_ext4fs_def:
 	@$(ECHO) "Building make_ext4fs_def..."
-	@$(CC) -o $@ extras/ext4_utils/make_ext4fs_main.c $(EXT4FS_DEF_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
+	@$(CC) -o $@ $(EXT4FS_MAIN) $(EXT4FS_DEF_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
 	@$(ECHO) "*******************************************"
-		
+	
 ext2simg:
 	@$(ECHO) "Building ext2simg..."
 	@$(CC) -o $@ extras/ext4_utils/ext2simg.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
@@ -219,4 +233,5 @@ clear:
 	extras \
 	libselinux \
 	zlib \
-	external
+	external \
+	pcre
