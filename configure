@@ -5,7 +5,8 @@
 BRANCH=android-2.3.7_r1
 BRANCH_EXT=gb-release-7.2
 FILE=extras/ext4_utils/make_ext4fs.c
-FILE1=extras/ext4_utils/mkuserimg.sh
+FILE1=extras/ext4_utils/make_ext4fs_def.c
+FILE2=extras/ext4_utils/mkuserimg.sh
 
 get_src() {
 	git clone $1
@@ -38,13 +39,14 @@ get_src https://github.com/CyanogenMod/android_system_core.git
 	checkout_external
 	cd ../..
 
-edit_text '/^/s:fs_config_func(dentries://fs_config_func(dentries:' $FILE
-edit_text '/^/s:mode;:stat.st_mode;:' $FILE
-edit_text '/^/s:uid;:stat.st_uid;:' $FILE
-edit_text '/^/s:gid;:stat.st_gid;:' $FILE
-edit_text '/^/s:root_stat.st_mode;:root_mode;:' $FILE
-edit_text '/^/s:MAKE_EXT4FS_CMD="make_ext4fs:MAKE_EXT4FS_CMD="./make_ext4fs:' $FILE1
-	cp -fv $FILE1 .
+	cp -fv $FILE $FILE1
+edit_text '/^/s:fs_config_func(dentries://fs_config_func(dentries:' $FILE1
+edit_text '/^/s:mode;:stat.st_mode;:' $FILE1
+edit_text '/^/s:uid;:stat.st_uid;:' $FILE1
+edit_text '/^/s:gid;:stat.st_gid;:' $FILE1
+edit_text '/^/s:root_stat.st_mode;:root_mode;:' $FILE1
+edit_text '/^/s:MAKE_EXT4FS_CMD="make_ext4fs:MAKE_EXT4FS_CMD="./make_ext4fs:' $FILE2
+	cp -fv $FILE2 .
 
 echo
 echo "for android.googlesource.com choosed branch $BRANCH..."
