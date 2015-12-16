@@ -3,7 +3,7 @@
 # configure script for android_img_repack_tools.
 #
 BRANCH=android-6.0.0_r1
-BRANCH_EXT=stable/cm-13.0
+BRANCH_EXT=cm-13.0
 FILE=extras/ext4_utils/make_ext4fs.c
 FILE1=extras/ext4_utils/make_ext4fs_def.c
 FILE2=extras/ext4_utils/mkuserimg.sh
