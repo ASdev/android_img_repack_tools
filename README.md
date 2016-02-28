@@ -1,4 +1,4 @@
-android_img_repack_tools branch android-2.3.7_r1
+android_img_repack_tools
 ====================
 
 android_img_repack_tools is a kit utilites for unpack/repack android ext4 and boot images
