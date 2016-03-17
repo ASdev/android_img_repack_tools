@@ -4,9 +4,11 @@
 #
 BRANCH=android-6.0.1_r22
 BRANCH_EXT=cm-13.0
-FILE=sepolicy/file_contexts
-FILE1=extras/ext4_utils/mkuserimg.sh
-FILE2=core/libsparse/simg_dump.py
+FILE=extras/ext4_utils/make_ext4fs.c
+FILE1=extras/ext4_utils/make_ext4fs_def.c
+FILE2=extras/ext4_utils/mkuserimg.sh
+FILE3=sepolicy/file_contexts
+FILE4=core/libsparse/simg_dump.py
 
 
 get_src() {
@@ -74,12 +76,21 @@ cd ../..
 
 echo Patch files
 	
-sed -i '/^/s:MAKE_EXT4FS_CMD="make_ext4fs:MAKE_EXT4FS_CMD="./make_ext4fs:' $FILE1
+cp -fv $FILE $FILE1
+edit_text '/^/s:fs_config_func(dentries://fs_config_func(dentries:' $FILE1
+edit_text '/^/s:mode;:stat.st_mode;:' $FILE1
+edit_text '/^/s:uid;:stat.st_uid;:' $FILE1
+edit_text '/^/s:gid;:stat.st_gid;:' $FILE1
+edit_text '/^/s:root_stat.st_mode;:root_mode;:' $FILE1
+edit_text '/^/s:MAKE_EXT4FS_CMD="make_ext4fs:MAKE_EXT4FS_CMD="./make_ext4fs:' $FILE2
 
-
-
-
-
-	cp -fv $FILE .
-	cp -fv $FILE1 .
-	cp -fv $FILE2 .
+cp -fv \
+       $FILE2 .
+       $FILE3 .
+       $FILE4 .
+       
+echo
+echo "for android.googlesource.com choosed branch $BRANCH..."
+echo
+echo "for Cyanogen Mod source choosed branch $BRANCH_EXT..."
+echo
