@@ -77,8 +77,8 @@ edit_text '/^/s:root_stat.st_mode;:root_mode;:' $FILE1
 edit_text '/^/s:MAKE_EXT4FS_CMD="make_ext4fs:MAKE_EXT4FS_CMD="./make_ext4fs:' $FILE2
 
 cp -fv \
-       $FILE2 .
-       $FILE3 .
+       $FILE2 . \
+       $FILE3 . \
        $FILE4 .
        
 echo
