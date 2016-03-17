@@ -74,7 +74,6 @@ EXT4FS_DEF_SRCS= \
     extras/ext4_utils/contents.c \
     extras/ext4_utils/extent.c \
     extras/ext4_utils/indirect.c \
-    extras/ext4_utils/uuid.c \
     extras/ext4_utils/sha1.c \
     extras/ext4_utils/wipe.c \
     extras/ext4_utils/crc16.c \
