@@ -59,16 +59,8 @@ get_src https://github.com/CyanogenMod/android_system_core.git
 	checkout_external
 	cd ..
 get_src https://github.com/Chainfire/sgs4ext4fs
-    cd ..
 
-
-
-echo
-echo "for android.googlesource.com choosed branch $BRANCH..."
-echo
-echo "for Cyanogen Mod source choosed branch $BRANCH_EXT..."
-echo
-cd pcre/dist
+cd ../pcre/dist
 ./configure && make
 cd ../../zlib/src
 ./configure && make
