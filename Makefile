@@ -108,6 +108,7 @@ all: \
 	img2simg \
 	append2simg \
 	make_ext4fs \
+	make_ext4fs_def \
 	ext2simg \
 	sgs4ext4fs
 
@@ -196,7 +197,12 @@ make_ext4fs:
 	@$(ECHO) "Building make_ext4fs..."
 	@$(CROSS_COMPILE)$(CC) -o $@ $(EXT4FS_MAIN) $(EXT4FS_SRCS) $(LIB_LOCAL) $(CFLAGS) $(LDFLAGS)
 	@$(ECHO) "*******************************************"
-	
+
+make_ext4fs_def:
+	@$(ECHO) "Building make_ext4fs_def..."
+	@$(CC) -o $@ $(EXT4FS_MAIN) $(EXT4FS_DEF_SRCS) $(CFLAGS) $(LDFLAGS) $(LIBS) $(LIBZ)
+	@$(ECHO) "*******************************************"
+		
 ext2simg:
 	@$(ECHO) "Building ext2simg..."
 	@$(CROSS_COMPILE)$(CC) -o $@ extras/ext4_utils/ext2simg.c $(EXT4FS_SRCS) $(CFLAGS) $(LDFLAGS) $(LIB_LOCAL)
