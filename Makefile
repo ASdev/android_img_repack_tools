@@ -132,7 +132,7 @@ all: \
 
 libselinux:
 	@$(ECHO) "Building libselinux..."
-	@$(CROSS_COMPILE)$(CC) -c $(SELINUX_SRCS) $(CFLAGS) $(SELINUX_HOST) $(DFLAGS)
+	@$(CROSS_COMPILE)$(CC) -c $(SELINUX_SRCS) $(CFLAGS) $(SELINUX_HOST)
 	@$(AR) cqs $@.a *.o
 	@$(RM) -rfv *.o
 	@$(ECHO) "*******************************************"
