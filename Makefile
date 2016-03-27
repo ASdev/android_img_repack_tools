@@ -23,6 +23,7 @@ SELINUX_SRCS= \
 	libselinux/src/load_policy.c \
 	libselinux/src/lsetfilecon.c \
 	libselinux/src/policyvers.c \
+	libselinux/src/procattr.c \
 	libselinux/src/setenforce.c \
 	libselinux/src/setfilecon.c \
 	libselinux/src/context.c \
@@ -31,8 +32,10 @@ SELINUX_SRCS= \
 	libselinux/src/compute_create.c \
 	libselinux/src/compute_av.c \
 	libselinux/src/avc.c \
+	libselinux/src/avc_internal.c \
 	libselinux/src/avc_sidtab.c \
 	libselinux/src/get_initial_context.c \
+	libselinux/src/checkAccess.c \
 	libselinux/src/sestatus.c \
 	libselinux/src/deny_unknown.c
 SELINUX_HOST= \
