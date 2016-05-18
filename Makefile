@@ -1,4 +1,4 @@
-CC=gcc-5 -I. -DANDROID
+CC=gcc -I. -DANDROID
 AR=ar
 RM=rm
 ECHO=echo
